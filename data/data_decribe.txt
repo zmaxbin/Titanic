@@ -1,0 +1,10 @@
+survival    Survival	 0 = No, 1 = Yes
+pclass  Ticket class	 1 = 1st, 2 = 2nd, 3 = 3rd
+sex	Sex
+Age     Age     in years
+sibsp	# of siblings / spouses aboard the Titanic 携带的兄弟(姐妹)/配偶数量
+parch	# of parents / children aboard the Titanic 携带的父母/孩子数量
+ticket	Ticket number 船票号
+fare	Passenger fare 旅客票价
+cabin	Cabin number 客舱号
+embarked	Port of Embarkation	C = Cherbourg, Q = Queenstown, S = Southampton  从哪个港口登船
