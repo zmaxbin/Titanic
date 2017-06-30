@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import re as re
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.cross_validation import train_test_split
 
 train_df  = pd.read_csv("../data/train.csv")
 test_df = pd.read_csv("../data/test.csv",index_col=0)
@@ -21,14 +22,14 @@ for dataset in full_data:
 # print (train_df[['NiceSibSp', 'Survived']].groupby(['NiceSibSp'], as_index=False).mean())
 
 for dataset in full_data:
-    dataset['Fare'] = dataset['Fare'].fillna(train_df['Fare'].median())
+    dataset['Fare'] = dataset['Fare'].fillna(test_df['Fare'].median())
 
 for dataset in full_data:
     dataset['Age'] = dataset['Age'].fillna(train_df['Age'].median())
 
 for dataset in full_data:
     # Mapping Sex
-    dataset['Sex'] = dataset['Sex'].map({'female': 0, 'male': 1}).astype(int)
+    dataset['Sex'] = dataset['Sex'].map({'female': 1, 'male': 0}).astype(int)
 
     # Mapping Embarked
     dataset['Embarked'] = dataset['Embarked'].map({'S': 0, 'Q': 1, 'C': 2}).astype(int)
@@ -59,21 +60,21 @@ all_data = pd.concat((train,test))
 
 # all_data_dummy = pd.get_dummies(all_data)
 
-X_train = all_data[:train.shape[0]].values
-X_test = all_data[train.shape[0]:].values
-y = train_df.Survived.values
+X_train = all_data[:train.shape[0]]
+X_test = all_data[train.shape[0]:]
+y = train_df.Survived
 
-# print(X_train.head(10))
-
-
-
-# X_train, X_test, y_train, y_test = train_test_split(train,y,test_size=0.3,random_state=0)
+print(X_train.head(10))
 
 
-model_decisiontree = DecisionTreeClassifier().fit(X_train, y)
-y_pred_Decisiontree = model_decisiontree.predict(X_test)
-# print('Misclassified samples: %d' % (y_test != y_pred_Decisiontree).sum())
+
+x_train, x_test, y_train, y_test = train_test_split(X_train,y,test_size=0.3,random_state=0)
 
 
-submission_df = pd.DataFrame(data = {'PassengerId':test_df.index,'Survived':y_pred_Decisiontree})
-submission_df.to_csv('../data/submission2.csv',columns = ['PassengerId','Survived'],index = False)
+model_decisiontree = DecisionTreeClassifier().fit(x_train, y_train)
+y_pred_Decisiontree = model_decisiontree.predict(x_test)
+print('Misclassified samples: %d' % (y_test != y_pred_Decisiontree).sum())
+
+
+# submission_df = pd.DataFrame(data = {'PassengerId':test_df.index,'Survived':y_pred_Decisiontree})
+# submission_df.to_csv('../data/submission2.csv',columns = ['PassengerId','Survived'],index = False)

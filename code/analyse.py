@@ -8,6 +8,53 @@ import numpy as np
 train_df  = pd.read_csv("../data/train.csv")
 test_df = pd.read_csv("../data/test.csv",index_col=0)
 
+
+# df_dummy_train = pd.get_dummies(train_df)
+#
+# # 画出相关系数图
+# colormap = plt.cm.viridis
+# plt.figure(figsize=(12,12))
+# plt.title('Feature correlations', y=1.05, size=15)
+# sns.heatmap(df_dummy_train.corr(),linewidths=0.1,vmax=1.0, square=True, cmap=colormap, linecolor='white', annot=True)
+# plt.show()
+
+# fare_median = test_df[(test_df['Pclass'] == 3) & (test_df['Embarked'] == 'S')]['Fare'].median()
+# test_df['Fare'] = test_df['Fare'].fillna(fare_median)
+# print(fare_median)
+#
+
+# 获取属性值的第一个字符
+train_df['Deck'] = train_df['Cabin'].str[0]
+test_df['Deck'] = test_df['Cabin'].str[0]
+
+# 将Pclas为1，Embarked为NaN的值筛选出来，并且赋予新值C
+train_df.ix[(train_df['Pclass']==1) & (train_df['Embarked'].isnull() == True),'Deck'] = 'C'
+
+train_df['Deck'] = train_df['Deck'].fillna('F')
+
+size_mapping = {
+    'C': 0,
+    'E': 1,
+    'G':2,
+    'D':3,
+    'A':4,
+    'B':5,
+    'F':6,
+    'T':7
+}
+train_df['Deck'] = train_df['Deck'].map(size_mapping)
+
+# 画出三者的关系箱形图
+sns.boxplot(x="Deck", y="Fare", hue="Pclass", data=train_df)
+plt.show()
+
+# 查看船舱
+print(train_df['Deck'].unique())
+# 画出在 Deck为NaN的情况下Fare的直方图
+(train_df[train_df['Deck'].isnull()]['Fare']).hist(bins=100)
+plt.show()
+
+
 # 可以看出票的级别越高（数字越小）,存活概率越大
 # print train_df[['Pclass', 'Survived']].groupby(['Pclass'], as_index=False).mean().sort_values(by='Survived', ascending=False)
    # Pclass  Survived
@@ -64,7 +111,7 @@ size_mapping = {
     'S': 3
 }
 train_df['Embarked'] = train_df['Embarked'].map(size_mapping)
-print(train_df[['Embarked', 'Survived']].groupby(['Embarked'], as_index=False).mean().sort_values(by='Survived', ascending=False))
+# print(train_df[['Embarked', 'Survived']].groupby(['Embarked'], as_index=False).mean().sort_values(by='Survived', ascending=False))
 
 # print(pd.DataFrame({"columns":list(train_df.columns)[1:], "coef":list(clf.coef_.T)}))
 
