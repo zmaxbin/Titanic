@@ -17,8 +17,8 @@ test_df = pd.read_csv("../data/test.csv",index_col=0)
 
 # 可以看出女性的存活率高于男性
 size_mapping = {
-    'male': 1,
-    'female': 0
+    'male': 0,
+    'female': 1
 }
 train_df['Sex'] = train_df['Sex'].map(size_mapping)
 # print train_df[['Sex', 'Survived']].groupby(['Sex'], as_index=False).mean().sort_values(by='Survived', ascending=False)
@@ -64,14 +64,25 @@ size_mapping = {
     'S': 3
 }
 train_df['Embarked'] = train_df['Embarked'].map(size_mapping)
-print train_df[['Embarked', 'Survived']].groupby(['Embarked'], as_index=False).mean().sort_values(by='Survived', ascending=False)
+print(train_df[['Embarked', 'Survived']].groupby(['Embarked'], as_index=False).mean().sort_values(by='Survived', ascending=False))
+
+# print(pd.DataFrame({"columns":list(train_df.columns)[1:], "coef":list(clf.coef_.T)}))
+
+# correlation matrix 相关系数矩阵
+# colormap = plt.cm.viridis
+# plt.figure(figsize=(12,12))
+# plt.title('Feature correlations', y=1.05, size=15)
+# sns.heatmap(train_df.corr(),linewidths=0.1,vmax=1.0, square=True, cmap=colormap, linecolor='white', annot=True)
+# plt.show()
+
+
 
 # # missing data
-# total = train_df.isnull().sum().sort_values(ascending=False)
-# percent = (train_df.isnull().sum()/train_df.isnull().count()).sort_values(ascending=False)
-# missing_data = pd.concat([total, percent], axis=1, keys=['Total', 'Percent'])
-# print missing_data.head(12)
-total = test_df.isnull().sum().sort_values(ascending=False)
-percent = (test_df.isnull().sum()/test_df.isnull().count()).sort_values(ascending=False)
+total = train_df.isnull().sum().sort_values(ascending=False)
+percent = (train_df.isnull().sum()/train_df.isnull().count()).sort_values(ascending=False)
 missing_data = pd.concat([total, percent], axis=1, keys=['Total', 'Percent'])
-print missing_data.head(12)
+print(missing_data.head(12))
+# total = test_df.isnull().sum().sort_values(ascending=False)
+# percent = (test_df.isnull().sum()/test_df.isnull().count()).sort_values(ascending=False)
+# missing_data = pd.concat([total, percent], axis=1, keys=['Total', 'Percent'])
+# print(missing_data.head(12))
